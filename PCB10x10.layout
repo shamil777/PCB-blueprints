@@ -1,0 +1,154 @@
+#!/usr/bin/layout
+#name=XMon resonators
+#help=Creates svaston resonator design
+
+#include "ground.layout"
+#include "layersSetup.layout"
+#include "smp.layout" 
+#include "wiring.layout"
+#include "auxx.layout"
+#include "hole.layout"
+#include "vias.layout"
+
+        int error = 0;
+        int M = 100;
+        int protect = 102;
+        int ground = 103;
+        int bottom = 60;
+        int hole = 4;
+        int board=5;
+        int top = 28;
+        int via = 27;
+        int aux = 106;
+        int aux2 = 107;
+        int aux3 = 108;
+        int aux4 = 109;
+        
+        int hole_margin = 250e3;
+        
+        int r_PCB = 2.840e7/2;
+        int r_screw_holes = 2.5e7/2;
+        int delta_r_second_screw_holes = 500e3;
+        int r_screw_hole = 2.3e6/2;
+        
+        int  r_via = 100e3;
+        
+        int r_smps = 23e6/2;
+        int r_feed = 2.5e6;
+        int w_feed = 300e3;
+        int g_feed = 150e3;
+        int g_protect = 2*g_feed+w_feed;
+        
+        int w_sample_hole = 10.2e6;
+        int h_sample_hole = 10.2e6;
+        
+        
+void add_diagonal_lead(cell* curCell, point start, bool flip_vertically, bool flip_horizontally) {
+
+        point center;   
+        center.set(start.x() - r_feed*math::sin(-math::pi/10.+math::pi/4.), start.y() + r_feed*math::cos(-math::pi/10.+math::pi/4.) );
+        curCell->addPolygonArc(center, r_feed-w_feed/2, r_feed+w_feed/2, -90, -90-180/10.+180/4., aux2);
+        curCell->addPolygonArc(center, r_feed-g_protect/2, r_feed+g_protect/2, -90, -90-180/10.+180/4., aux3);
+        
+        int next_r_feed = (center.y() - r_feed-h_sample_hole/2-hole_margin); 
+        center.set(center.x(), h_sample_hole/2+hole_margin);
+        curCell->addPolygonArc(center, next_r_feed-w_feed/2, next_r_feed+w_feed/2, 90, 180, aux2);
+        curCell->addPolygonArc(center, next_r_feed-g_protect/2, next_r_feed+g_protect/2, 90, 180, aux3);
+        
+        if (flip_vertically) {
+            curCell->selectLayer(aux2);
+            curCell->selectLayer(aux3);
+            curCell->mirrorSelect(newPoint(-10, 0), newPoint(0,0));
+        } 
+        if (flip_horizontally) {
+            curCell->selectLayer(aux2);
+            curCell->selectLayer(aux3);
+            curCell->mirrorSelect(newPoint(0, -10e6), newPoint(0,10e6));
+        }
+        curCell->deselectAll();
+        
+        layout->booleanTool->boolOnLayer(aux2, M, M, "A+B", 0, 0, 0);
+        layout->booleanTool->boolOnLayer(aux3, protect, protect, "A+B", 0, 0, 0);
+        
+        clearAllAuxiliaryAux(curCell);
+}
+
+int main() {
+
+    setup::circularDefault = 5;
+    setupLayers();
+    layout->drawing->selectAll();
+    layout->drawing->deleteSelect();
+    layout->drawing->deselectAll();
+
+    cell *curCell = layout->drawing->currentCell;
+    
+    add_PCB_ground_top(curCell);
+    
+    point cursor;        
+    
+    for (int i=0; i<8; i++) {
+        
+        int angle_delta = 180/10;
+        
+        if (i%2 == 0) {
+            cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+2*180/8.*i);
+        } else if (i==1){
+            cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90-angle_delta+2*180/8.*i);
+        } else if (i==3){
+            cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+angle_delta+2*180/8.*i);
+        } else if (i==5){
+            cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90-angle_delta+2*180/8.*i);
+        } else {
+            cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+angle_delta+2*180/8.*i);
+        }
+        
+        if (i == 0) {
+            wire(curCell, M, cursor, "l", cursor.x()-w_sample_hole/2 - hole_margin, w_feed);    
+            wire(curCell, protect, cursor, "l", cursor.x()-w_sample_hole/2-hole_margin, g_protect);
+            
+        } if (i == 1) {
+            add_diagonal_lead(curCell, cursor, false, false);
+            add_diagonal_lead(curCell, cursor, false, true);   
+            add_diagonal_lead(curCell, cursor, true, true);   
+            add_diagonal_lead(curCell, cursor, true, false);   
+            
+        }  if (i == 2) {
+            wire(curCell, M, cursor, "d", cursor.y()-h_sample_hole/2-hole_margin, w_feed);    
+            wire(curCell, protect, cursor, "d", cursor.y()-h_sample_hole/2-hole_margin, g_protect);
+
+        } if (i == 4) {
+            wire(curCell, M, cursor, "r", -cursor.x()-w_sample_hole/2-hole_margin, w_feed);    
+            wire(curCell, protect, cursor, "r", -cursor.x()-w_sample_hole/2-hole_margin, g_protect);
+            
+        }  if (i == 6) {
+            wire(curCell, M, cursor, "u", -cursor.y()-h_sample_hole/2-hole_margin, w_feed);    
+            wire(curCell, protect, cursor, "u", -cursor.y()-h_sample_hole/2-hole_margin, g_protect);
+        }
+    }
+    
+    add_PCB_hole(curCell);
+    
+    layout->booleanTool->boolOnLayer(ground, protect, aux, "A-B", 0, 0, 0);
+    layout->booleanTool->boolOnLayer(aux, M, top, "A+B", 0, 0, 0);
+    
+    add_PCB_ground_bottom(curCell);
+    
+    clearLayer(curCell, aux);
+    
+    add_vias(curCell);
+    
+    curCell->addCircle(board, newPoint(0,0), r_PCB+hole_margin);
+    
+    clearLayer(curCell, M);
+    clearLayer(curCell, protect);
+    clearLayer(curCell, ground);
+    
+}
+
+

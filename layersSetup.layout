@@ -1,0 +1,55 @@
+
+void setupLayers() {
+    layers::enableAllLayer();
+    layers::num[100].name="M";
+    layers::num[100].setStyle(9);
+    layers::num[100].setColor(255,143,14);
+    layers::num[100].mapToLayer= 0;
+    layers::num[100].mapToDatatype= -1;
+    layers::num[101].name="Ebeam";
+    layers::num[101].setStyle(5);
+    layers::num[101].setColor(255,14,143);
+    layers::num[101].mapToLayer= 0;
+    layers::num[101].mapToDatatype= -1;
+    layers::num[102].name="protect";
+    layers::num[102].setStyle(26);
+    layers::num[102].setColor(100,100,100);
+    layers::num[102].mapToLayer= 1;
+    layers::num[102].mapToDatatype= -1;
+    layers::num[103].name="ground";
+    layers::num[103].setStyle(1);
+    layers::num[103].setColor(255,143,14);
+    layers::num[103].mapToLayer= 2;
+    layers::num[103].mapToDatatype= -1;
+    layers::num[60].name="bottom";
+    layers::num[60].setStyle(9);
+    layers::num[60].setColor(0,0,125);
+    layers::num[60].mapToLayer= 3;
+    layers::num[60].mapToDatatype= -1;
+    layers::num[28].name="top";
+    layers::num[28].setStyle(9);
+    layers::num[28].setColor(0,125,0);
+    layers::num[28].mapToLayer= 4;
+    layers::num[28].mapToDatatype= -1;
+    layers::num[106].name="aux";
+    layers::num[106].setStyle(1);
+    layers::num[106].setColor(0,125,0);
+    layers::num[106].mapToLayer= 4;
+    layers::num[106].mapToDatatype= -1;
+    layers::num[107].name="aux2";
+    layers::num[107].setStyle(1);
+    layers::num[107].setColor(0,0,125);
+    layers::num[107].mapToLayer= 4;
+    layers::num[107].mapToDatatype= -1;
+    layers::num[108].name="aux3";
+    layers::num[108].setStyle(1);
+    layers::num[108].setColor(125,0,0);
+    layers::num[108].mapToLayer= 4;
+    layers::num[108].mapToDatatype= -1;
+    layers::num[109].name="aux4";
+    layers::num[109].setStyle(1);
+    layers::num[109].setColor(125,0,125);
+    layers::num[109].mapToLayer= 4;
+    layers::num[109].mapToDatatype= -1;
+
+}

@@ -1,0 +1,82 @@
+/*
+    Adds a ground plane with holes for the screws, vias and the chip itself
+*/
+
+
+    
+void add_PCB_ground_top(cell* curCell) {
+        
+    point cursor;
+    cursor.set(0, 0);
+    
+    curCell->addCircle(ground, cursor, r_PCB);
+    
+
+    for (int i=0; i<8; i++) {
+        
+        cursor.set(r_screw_holes*math::cos(screw_holes_starting_angle+2*math::pi/8.*i), r_screw_holes*math::sin(screw_holes_starting_angle+2*math::pi/8.*i));
+        curCell->addCircle(protect, cursor, r_screw_hole+hole_margin);
+        
+        cursor.set((r_screw_holes-delta_r_second_screw_holes)*math::cos(screw_holes_starting_angle.+2*math::pi/8.*i), (r_screw_holes-delta_r_second_screw_holes)*math::sin(screw_holes_starting_angle+2*math::pi/8.*i));
+        curCell->addCircle(protect, cursor, r_screw_hole+hole_margin);
+        
+        curCell->addBox(-r_screw_hole-hole_margin, r_screw_holes - delta_r_second_screw_holes, 2*r_screw_hole+2*hole_margin, delta_r_second_screw_holes, aux4);
+        point center = newPoint(0,0);
+        rotateLayer(curCell, aux4, center, 2*180/16.+2*180/8.*i);
+        layout->booleanTool->boolOnLayer(aux4, protect, protect, "A+B", 0, 0, 0);
+        clearLayer(curCell, aux4);
+        
+    }
+    
+    curCell->addBox(-w_sample_hole/2-hole_margin, -h_sample_hole/2-hole_margin, w_sample_hole+2*hole_margin, h_sample_hole+2*hole_margin, protect);
+    
+    cursor.set(-w_sample_hole/2, -h_sample_hole/2+r_drill);
+    curCell->addCircle(protect, cursor, r_drill+hole_margin);
+    cursor.set(-w_sample_hole/2, h_sample_hole/2-r_drill);
+    curCell->addCircle(protect, cursor, r_drill+hole_margin);  
+    cursor.set(w_sample_hole/2, -h_sample_hole/2+r_drill);
+    curCell->addCircle(protect, cursor, r_drill+hole_margin);
+    cursor.set(w_sample_hole/2, h_sample_hole/2-r_drill);
+    curCell->addCircle(protect, cursor, r_drill+hole_margin);
+    
+}
+
+void add_PCB_ground_bottom(cell* curCell) {
+        
+    point cursor;
+    cursor.set(0, 0);
+    
+    curCell->addCircle(aux2, cursor, r_PCB);
+    
+
+    for (int i=0; i<8; i++) {
+        
+        cursor.set(r_screw_holes*math::cos(screw_holes_starting_angle+2*math::pi/8.*i), r_screw_holes*math::sin(screw_holes_starting_angle+2*math::pi/8.*i));
+        curCell->addCircle(aux3, cursor, r_screw_hole+hole_margin);
+        
+        cursor.set((r_screw_holes-delta_r_second_screw_holes)*math::cos(screw_holes_starting_angle+2*math::pi/8.*i), (r_screw_holes-delta_r_second_screw_holes)*math::sin(screw_holes_starting_angle+2*math::pi/8.*i));
+        curCell->addCircle(aux3, cursor, r_screw_hole+hole_margin);
+        
+        curCell->addBox(-r_screw_hole-hole_margin, r_screw_holes - delta_r_second_screw_holes, 2*r_screw_hole+2*hole_margin, delta_r_second_screw_holes, aux4);
+        point center = newPoint(0,0);
+        rotateLayer(curCell, aux4, center, 2*180/16.+2*180/8.*i);
+        layout->booleanTool->boolOnLayer(aux4, aux3, aux3, "A+B", 0, 0, 0);
+        clearLayer(curCell, aux4);
+    }
+    
+    curCell->addBox(-w_sample_hole/2-hole_margin, -h_sample_hole/2-hole_margin, w_sample_hole+2*hole_margin, h_sample_hole+2*hole_margin, aux3);
+    
+    cursor.set(-w_sample_hole/2, -h_sample_hole/2+r_drill);
+    curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+    cursor.set(-w_sample_hole/2, h_sample_hole/2-r_drill);
+    curCell->addCircle(aux3, cursor, r_drill+hole_margin);  
+    cursor.set(w_sample_hole/2, -h_sample_hole/2+r_drill);
+    curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+    cursor.set(w_sample_hole/2, h_sample_hole/2-r_drill);
+    curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+    
+    layout->booleanTool->boolOnLayer(aux2, aux3, bottom, "A-B", 0, 0, 0);
+    
+    clearAllAuxiliaryAux(curCell);
+    
+}

@@ -1,0 +1,78 @@
+
+#include "auxx.layout"
+
+    int r_smp = 4e6/2;
+    int a_smp_piedestal = 5e6;
+    int a_smp_footprint = 5.3e6;
+    int l_hotwire = 1.3e6;
+    int l_hotwire_depth = .3e6;
+    int w_hotwire = 0.5e6;
+    int w_hotwire_arc = 2e6;
+    
+    int w_smp = w_hotwire;
+    int g_smp = w_hotwire/2.;
+    int transition_len = 1e6;
+
+point add_SMP_with_transformer(cell* curCell, point center, int w_transformed, int g_transformed, double angle) {
+    
+    // Circular part of the footprint
+    curCell->addCircle(aux, center, r_smp);
+    
+    // SMP piedestal borders with correct cuts
+    curCell->addBox(center.x()-a_smp_piedestal/2, center.y()-a_smp_piedestal/2, a_smp_piedestal, a_smp_piedestal, aux2);
+    curCell->addBox(center.x()-a_smp_footprint/2, center.y()-a_smp_footprint/2, a_smp_footprint, a_smp_footprint, aux3);
+    layout->booleanTool->boolOnLayer(aux3, aux2, aux4, "A-B", 0, 0, 0);
+    
+    clearLayer(curCell, aux2);
+            // Cuts
+    curCell->addBox(center.x()-a_smp_footprint/2, center.y()-a_smp_footprint/2, a_smp_footprint/4, a_smp_footprint/4, aux2);
+    curCell->addBox(center.x()+a_smp_footprint/4, center.y()-a_smp_footprint/2, a_smp_footprint/4, a_smp_footprint/4, aux2);
+    curCell->addBox(center.x()-a_smp_footprint/2, center.y()+a_smp_footprint/4, a_smp_footprint, a_smp_footprint/4, aux2);
+
+    curCell->addBox(center.x()-a_smp_footprint/2, center.y()-a_smp_footprint/2, a_smp_footprint, a_smp_footprint-a_smp_piedestal, aux2);
+    layout->booleanTool->boolOnLayer(aux4, aux2, aux, "A-B", 0, 0, 0);
+    
+    clearAllAuxiliaryAux(curCell);
+    
+    // Protect layer around the hotwire pin
+    curCell->addBox(center.x()-w_hotwire_arc/2, center.y()-a_smp_piedestal/2, w_hotwire_arc, 1e6, aux);
+    curCell->addBox(center.x()-g_smp-w_smp/2., center.y()-a_smp_piedestal/2-l_hotwire+l_hotwire_depth, 2*g_smp+w_smp, l_hotwire, aux);
+        
+    rotateLayer(curCell, aux, center, angle);
+    layout->booleanTool->boolOnLayer(aux, protect, protect, "A+B", 0, 0, 0);
+    clearLayer(curCell, aux);
+    
+    curCell->addBox(center.x()-w_hotwire/2, center.y()-a_smp_piedestal/2-l_hotwire+l_hotwire_depth, w_hotwire, l_hotwire, aux2);
+    rotateLayer(curCell, aux2, center, angle);
+    layout->booleanTool->boolOnLayer(aux2, M, M, "A+B", 0, 0, 0);
+    clearLayer(curCell, aux2);
+    
+    int y_start= center.y()-a_smp_piedestal/2-l_hotwire+l_hotwire_depth;
+    
+    pointArray ps;
+    ps.attach(center.x()-w_smp/2, y_start);
+    ps.attach(center.x()-w_transformed/2, y_start-transition_len);
+    ps.attach(center.x()+w_transformed/2, y_start-transition_len);
+    ps.attach(center.x()+w_smp/2, y_start);
+    curCell->addPolygon(ps, aux2);
+    rotateLayer(curCell, aux2, center, angle);
+    layout->booleanTool->boolOnLayer(aux2, M, M, "A+B", 0, 0, 0);
+    
+    pointArray ps;
+    ps.attach(center.x()-w_smp/2-g_smp, y_start);
+    ps.attach(center.x()-w_transformed/2-g_transformed, y_start - transition_len);
+    ps.attach(center.x()+w_transformed/2+g_transformed, y_start - transition_len);
+    ps.attach(center.x()+w_smp/2+g_smp, y_start);
+    curCell->addPolygon(ps,  aux3);
+    rotateLayer(curCell, aux3, center, angle);
+    layout->booleanTool->boolOnLayer(aux3, protect, protect, "A+B", 0, 0, 0);
+    
+    clearAllAuxiliaryAux(curCell);
+    
+    point cursor;
+    cursor.set(0, -a_smp_piedestal/2-l_hotwire+l_hotwire_depth - transition_len);
+    return rotateVector(cursor, center, angle);
+    
+}
+
+

@@ -30,7 +30,7 @@
         int r_screw_holes = 2.5e7/2;
         int delta_r_second_screw_holes = 500e3;
         int r_screw_hole = 2.3e6/2;
-        double screw_holes_starting_angle = 2*math::pi/16.;
+        double screw_holes_starting_angle = 0;//2*math::pi/16.;
         double smp_starting_angle = 2*math::pi/16.- screw_holes_starting_angle;
         
         int  r_via = 100e3;
@@ -92,24 +92,10 @@ int main() {
     for (int i=0; i<8; i++) {
         
         int angle_delta = 180/10;
-        int rotation_angle = 2*math::pi/8.*i;
+        double rotation_angle = 2*math::pi/8.*i+smp_starting_angle;
         
-        if (i%2 == 0) {
-            cursor.set(r_smps*math::cos(rotation_angle), r_smps*math::sin(rotation_angle));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+rotation_angle/math::pi*180);
-        } else if (i==1){
-            cursor.set(r_smps*math::cos(rotation_angle), r_smps*math::sin(rotation_angle));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90-angle_delta+rotation_angle/math::pi*180);
-        } else if (i==3){
-            cursor.set(r_smps*math::cos(rotation_angle), r_smps*math::sin(rotation_angle));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+angle_delta+rotation_angle/math::pi*180);
-        } else if (i==5){
-            cursor.set(r_smps*math::cos(rotation_angle), r_smps*math::sin(rotation_angle));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90-angle_delta+rotation_angle/math::pi*180);
-        } else {
-            cursor.set(r_smps*math::cos(rotation_angle), r_smps*math::sin(rotation_angle));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+angle_delta+rotation_angle/math::pi*180);
-        }
+        cursor.set(r_smps*math::cos(rotation_angle), r_smps*math::sin(rotation_angle));
+        cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+rotation_angle/math::pi*180);
         
         if (i == 0) {
             wire(curCell, M, cursor, "l", cursor.x()-w_sample_hole/2 - hole_margin, w_feed);    

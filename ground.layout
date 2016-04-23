@@ -22,7 +22,7 @@ void add_PCB_ground_top(cell* curCell) {
         
         curCell->addBox(-r_screw_hole-hole_margin, r_screw_holes - delta_r_second_screw_holes, 2*r_screw_hole+2*hole_margin, delta_r_second_screw_holes, aux4);
         point center = newPoint(0,0);
-        rotateLayer(curCell, aux4, center, 2*180/16.+2*180/8.*i);
+        rotateLayer(curCell, aux4, center, screw_holes_starting_angle+2*180/8.*i);
         layout->booleanTool->boolOnLayer(aux4, protect, protect, "A+B", 0, 0, 0);
         clearLayer(curCell, aux4);
         
@@ -59,7 +59,7 @@ void add_PCB_ground_bottom(cell* curCell) {
         
         curCell->addBox(-r_screw_hole-hole_margin, r_screw_holes - delta_r_second_screw_holes, 2*r_screw_hole+2*hole_margin, delta_r_second_screw_holes, aux4);
         point center = newPoint(0,0);
-        rotateLayer(curCell, aux4, center, 2*180/16.+2*180/8.*i);
+        rotateLayer(curCell, aux4, center, screw_holes_starting_angle+2*180/8.*i);
         layout->booleanTool->boolOnLayer(aux4, aux3, aux3, "A+B", 0, 0, 0);
         clearLayer(curCell, aux4);
     }

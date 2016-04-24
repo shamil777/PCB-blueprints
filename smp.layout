@@ -11,9 +11,8 @@
     
     int w_smp = w_hotwire;
     int g_smp = w_hotwire/2.;
-    int transition_len = 1e6;
-
-point add_SMP_with_transformer(cell* curCell, point center, int w_transformed, int g_transformed, double angle) {
+    
+point add_SMP_with_transformer(cell* curCell, point center, int w_transformed, int g_transformed, int transition_len, double angle) {
     
     // Circular part of the footprint
     curCell->addCircle(aux, center, r_smp);
@@ -37,7 +36,7 @@ point add_SMP_with_transformer(cell* curCell, point center, int w_transformed, i
     // Protect layer around the hotwire pin
     curCell->addBox(center.x()-w_hotwire_arc/2, center.y()-a_smp_piedestal/2, w_hotwire_arc, 1e6, aux);
     curCell->addBox(center.x()-g_smp-w_smp/2., center.y()-a_smp_piedestal/2-l_hotwire+l_hotwire_depth, 2*g_smp+w_smp, l_hotwire, aux);
-        
+
     rotateLayer(curCell, aux, center, angle);
     layout->booleanTool->boolOnLayer(aux, protect, protect, "A+B", 0, 0, 0);
     clearLayer(curCell, aux);

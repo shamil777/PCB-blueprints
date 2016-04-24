@@ -30,11 +30,14 @@
         int r_screw_holes = 2.5e7/2;
         int delta_r_second_screw_holes = 500e3;
         int r_screw_hole = 2.3e6/2;
+        double screw_holes_starting_angle = 2*math::pi/16.;
         
         int  r_via = 100e3;
         
         int r_smps = 23e6/2;
-        int r_feed = 2.5e6;
+        double smp_starting_angle = 2*math::pi/16. - screw_holes_starting_angle;
+        int smp_transition_len = .5e6;
+        int r_feed = 3.1e6;
         int w_feed = 300e3;
         int g_feed = 150e3;
         int g_protect = 2*g_feed+w_feed;
@@ -93,19 +96,19 @@ int main() {
         
         if (i%2 == 0) {
             cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+2*180/8.*i);
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len*2, -90+2*180/8.*i);
         } else if (i==1){
             cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90-angle_delta+2*180/8.*i);
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len, -90-angle_delta+2*180/8.*i);
         } else if (i==3){
             cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+angle_delta+2*180/8.*i);
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len, -90+angle_delta+2*180/8.*i);
         } else if (i==5){
             cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90-angle_delta+2*180/8.*i);
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len, -90-angle_delta+2*180/8.*i);
         } else {
             cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
-            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+angle_delta+2*180/8.*i);
+            cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len, -90+angle_delta+2*180/8.*i);
         }
         
         if (i == 0) {
@@ -141,7 +144,7 @@ int main() {
     
     clearLayer(curCell, aux);
     
-    add_vias(curCell);
+/*    add_vias(curCell);*/
     
     curCell->addCircle(board, newPoint(0,0), r_PCB+hole_margin);
     

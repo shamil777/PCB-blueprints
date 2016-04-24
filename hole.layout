@@ -19,7 +19,7 @@ void add_PCB_hole(cell* curCell) {
         
         curCell->addBox(-r_screw_hole, r_screw_holes - delta_r_second_screw_holes, 2*r_screw_hole, delta_r_second_screw_holes, aux4);
         point center = newPoint(0,0);
-        rotateLayer(curCell, aux4, center, screw_holes_starting_angle+2*180/8.*i);
+        rotateLayer(curCell, aux4, center, screw_holes_starting_angle*180/math::pi+2*180/8.*i);
         layout->booleanTool->boolOnLayer(aux4, hole, hole, "A+B", 0, 0, 0);
         clearLayer(curCell, aux4);
         

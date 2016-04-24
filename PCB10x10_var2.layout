@@ -31,12 +31,12 @@
         int delta_r_second_screw_holes = 500e3;
         int r_screw_hole = 2.3e6/2;
         double screw_holes_starting_angle = 0;//2*math::pi/16.;
-        double smp_starting_angle = 2*math::pi/16.- screw_holes_starting_angle;
-        
+
         int  r_via = 100e3;
         
         int r_smps = 23e6/2;
-        int r_feed = 2.5e6;
+        int smp_transition_len = 0.75e6;
+        double smp_starting_angle = 2*math::pi/16.- screw_holes_starting_angle;
         int w_feed = 300e3;
         int g_feed = 150e3;
         int g_protect = 2*g_feed+w_feed;
@@ -45,28 +45,31 @@
         int h_sample_hole = 10.2e6;
         
         
-void add_diagonal_lead(cell* curCell, point start, bool flip_vertically, bool flip_horizontally) {
+void add_diagonal_lead(cell* curCell, point start, bool flip_vertically, bool flip_horizontally, double rotation_angle) {
 
+        int r_feed = (start.y() - hole_margin-h_sample_hole/2)/math::sin(math::pi/8);
+    
         point center;   
-        center.set(start.x() - r_feed*math::sin(-math::pi/10.+math::pi/4.), start.y() + r_feed*math::cos(-math::pi/10.+math::pi/4.) );
-        curCell->addPolygonArc(center, r_feed-w_feed/2, r_feed+w_feed/2, -90, -90-180/10.+180/4., aux2);
-        curCell->addPolygonArc(center, r_feed-g_protect/2, r_feed+g_protect/2, -90, -90-180/10.+180/4., aux3);
+        center.set(start.x() +(start.y() - hole_margin-h_sample_hole/2)/math::tan(math::pi/8) , hole_margin+h_sample_hole/2 );
+        curCell->addPolygonArc(center, r_feed-w_feed/2, r_feed+w_feed/2, 7*180/8., 180., aux2);
+        curCell->addPolygonArc(center,  r_feed-g_protect/2, r_feed+g_protect/2, 7*180/8., 180., aux3);
         
-        int next_r_feed = (center.y() - r_feed-h_sample_hole/2-hole_margin); 
-        center.set(center.x(), h_sample_hole/2+hole_margin);
-        curCell->addPolygonArc(center, next_r_feed-w_feed/2, next_r_feed+w_feed/2, 90, 180, aux2);
-        curCell->addPolygonArc(center, next_r_feed-g_protect/2, next_r_feed+g_protect/2, 90, 180, aux3);
+        rotateLayer(curCell, aux2, newPoint(0,0), rotation_angle);
+        rotateLayer(curCell, aux3, newPoint(0,0), rotation_angle);
         
         if (flip_vertically) {
             curCell->selectLayer(aux2);
             curCell->selectLayer(aux3);
             curCell->mirrorSelect(newPoint(-10, 0), newPoint(0,0));
         } 
+        
         if (flip_horizontally) {
             curCell->selectLayer(aux2);
             curCell->selectLayer(aux3);
             curCell->mirrorSelect(newPoint(0, -10e6), newPoint(0,10e6));
         }
+        
+        
         curCell->deselectAll();
         
         layout->booleanTool->boolOnLayer(aux2, M, M, "A+B", 0, 0, 0);
@@ -95,30 +98,19 @@ int main() {
         double rotation_angle = 2*math::pi/8.*i+smp_starting_angle;
         
         cursor.set(r_smps*math::cos(rotation_angle), r_smps*math::sin(rotation_angle));
-        cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -90+rotation_angle/math::pi*180);
+        cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len, -90+rotation_angle/math::pi*180);
         
-        if (i == 0) {
-            wire(curCell, M, cursor, "l", cursor.x()-w_sample_hole/2 - hole_margin, w_feed);    
-            wire(curCell, protect, cursor, "l", cursor.x()-w_sample_hole/2-hole_margin, g_protect);
-            
-        } if (i == 1) {
-            add_diagonal_lead(curCell, cursor, false, false);
-            add_diagonal_lead(curCell, cursor, false, true);   
-            add_diagonal_lead(curCell, cursor, true, true);   
-            add_diagonal_lead(curCell, cursor, true, false);   
-            
-        }  if (i == 2) {
-            wire(curCell, M, cursor, "d", cursor.y()-h_sample_hole/2-hole_margin, w_feed);    
-            wire(curCell, protect, cursor, "d", cursor.y()-h_sample_hole/2-hole_margin, g_protect);
+        if (i == 1) {
+            add_diagonal_lead(curCell, cursor, false, false, 0);
+            add_diagonal_lead(curCell, cursor, false, true, 0);
+            add_diagonal_lead(curCell, cursor, true, true, 0);
+            add_diagonal_lead(curCell, cursor, true, false, 0);  
 
-        } if (i == 4) {
-            wire(curCell, M, cursor, "r", -cursor.x()-w_sample_hole/2-hole_margin, w_feed);    
-            wire(curCell, protect, cursor, "r", -cursor.x()-w_sample_hole/2-hole_margin, g_protect);
-            
-        }  if (i == 6) {
-            wire(curCell, M, cursor, "u", -cursor.y()-h_sample_hole/2-hole_margin, w_feed);    
-            wire(curCell, protect, cursor, "u", -cursor.y()-h_sample_hole/2-hole_margin, g_protect);
-        }
+            add_diagonal_lead(curCell, cursor, false, false, -90);
+            add_diagonal_lead(curCell, cursor, false, true, -90);
+            add_diagonal_lead(curCell, cursor, true, true, -90);
+            add_diagonal_lead(curCell, cursor, true, false, -90);  
+        } 
     }
     
     add_PCB_hole(curCell);

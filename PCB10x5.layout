@@ -30,10 +30,13 @@
         int r_screw_holes = 2.5e7/2;
         int delta_r_second_screw_holes = 500e3;
         int r_screw_hole = 2.3e6/2;
+        double screw_holes_starting_angle = 2*math::pi/16.;
         
         int  r_via = 100e3;
         
         int r_smps = 23e6/2;
+        double smp_starting_angle = 2*math::pi/16. - screw_holes_starting_angle;
+        int smp_transition_len = 1.2e6;
         int r_feed = 5.5e6;
         int w_feed = 300e3;
         int g_feed = 150e3;
@@ -60,11 +63,13 @@ void add_diagonal_lead(cell* curCell, point start, bool flip_vertically, bool fl
             curCell->selectLayer(aux3);
             curCell->mirrorSelect(newPoint(-10, 0), newPoint(0,0));
         } 
+        
         if (flip_horizontally) {
             curCell->selectLayer(aux2);
             curCell->selectLayer(aux3);
             curCell->mirrorSelect(newPoint(0, -10e6), newPoint(0,10e6));
         }
+        
         curCell->deselectAll();
         
         layout->booleanTool->boolOnLayer(aux2, M, M, "A+B", 0, 0, 0);
@@ -90,7 +95,7 @@ int main() {
     for (int i=0; i<8; i++) {
         
         cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
-        cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -180/2+2*180/8.*i);
+        cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len, -180/2+2*180/8.*i);
         
         if (i == 0) {
             wire(curCell, M, cursor, "l", cursor.x()-w_sample_hole/2 - hole_margin, w_feed);    

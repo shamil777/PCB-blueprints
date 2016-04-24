@@ -30,10 +30,13 @@
         int r_screw_holes = 2.5e7/2;
         int delta_r_second_screw_holes = 500e3;
         int r_screw_hole = 2.3e6/2;
+        double screw_holes_starting_angle = 2*math::pi/16.;
         
         int  r_via = 100e3;
         
         int r_smps = 23e6/2;
+        double smp_starting_angle = 2*math::pi/16. - screw_holes_starting_angle;
+        int smp_transition_len = 1e6;
         int r_feed = 3.9e6;
         int w_feed = 300e3;
         int g_feed = 150e3;
@@ -90,7 +93,7 @@ int main() {
     for (int i=0; i<8; i++) {
         
         cursor.set(r_smps*math::cos(2*math::pi/8.*i), r_smps*math::sin(2*math::pi/8.*i));
-        cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, -180/2+2*180/8.*i);
+        cursor = add_SMP_with_transformer(curCell, cursor, w_feed, g_feed, smp_transition_len, -180/2+2*180/8.*i);
         
         if (i == 0) {
             wire(curCell, M, cursor, "l", cursor.x()-w_sample_hole/2 - hole_margin, w_feed);    
@@ -125,7 +128,7 @@ int main() {
     
     clearLayer(curCell, aux);
     
-    add_vias(curCell);
+/*    add_vias(curCell);*/
     
     curCell->addCircle(board, newPoint(0,0), r_PCB+hole_margin);
     

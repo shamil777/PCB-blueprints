@@ -70,7 +70,7 @@ point add_SMP_with_transformer(cell* curCell, point center, int w_transformed, i
     
     point cursor;
     cursor.set(0, -a_smp_piedestal/2-l_hotwire+l_hotwire_depth - transition_len);
-    return rotateVector(cursor, center, angle);
+    return rotateVectorArbAngle(cursor, center, angle);
     
 }
 

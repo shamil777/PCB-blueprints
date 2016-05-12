@@ -2,7 +2,6 @@
     Adds a ground plane with holes for the screws, vias and the chip itself
 */
 
-    int r_drill = 1e6/2;
     
 void add_PCB_hole(cell* curCell) {
         

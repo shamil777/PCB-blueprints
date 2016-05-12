@@ -84,7 +84,7 @@ point rotateVector(point vec, point anchor, string direction) {
     }
 }
 
-point rotateVector(point vec, point anchor, double angle) {
+point rotateVectorArbAngle(point vec, point anchor, double angle) {
 
     point retPoint;
     retPoint.set(anchor.x() + vec.x()*math::cos(angle/180*math::pi)-vec.y()*math::sin(angle/180*math::pi), anchor.y()+vec.x()*math::sin(angle/180*math::pi)+vec.y()*math::cos(angle/180*math::pi));

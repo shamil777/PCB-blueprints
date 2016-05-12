@@ -1,0 +1,40 @@
+
+#include "auxx.layout"
+    
+void add_PCB_border(cell* curCell) {
+    
+    r_drill = 2*r_drill;
+    int drilling_radius = r_PCB+hole_margin+r_drill;
+    double angular_gap = 7.5;
+
+    curCell->addPolygonArc(newPoint(0,0), drilling_radius-r_drill, drilling_radius+r_drill, angular_gap, (90-angular_gap), aux);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(math::pi/180*angular_gap), drilling_radius*math::sin(math::pi/180*angular_gap)), r_drill);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(math::pi/180*(90-angular_gap)), drilling_radius*math::sin(math::pi/180*(90-angular_gap))), r_drill);
+    
+    
+    curCell->addPolygonArc(newPoint(0,0), drilling_radius-r_drill, drilling_radius+r_drill, (90+angular_gap), (180-angular_gap), aux);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(math::pi/180*(90+angular_gap)), drilling_radius*math::sin(math::pi/180*(90+angular_gap))), r_drill);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(math::pi/180*(180-angular_gap)), drilling_radius*math::sin(math::pi/180*(180-angular_gap))), r_drill);
+    
+    curCell->addPolygonArc(newPoint(0,0), drilling_radius-r_drill, drilling_radius+r_drill, -(180-angular_gap), -(90+angular_gap), aux);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(-math::pi/180*(90+angular_gap)), drilling_radius*math::sin(-math::pi/180*(90+angular_gap))), r_drill);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(-math::pi/180*(180-angular_gap)), drilling_radius*math::sin(-math::pi/180*(180-angular_gap))), r_drill);
+    
+    curCell->addPolygonArc(newPoint(0,0), drilling_radius-r_drill, drilling_radius+r_drill, -(90-angular_gap), -angular_gap, aux);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(-math::pi/180*(90-angular_gap)), drilling_radius*math::sin(-math::pi/180*(90-angular_gap))), r_drill);
+    curCell->addCircle(aux, newPoint(drilling_radius*math::cos(-math::pi/180*angular_gap), drilling_radius*math::sin(-math::pi/180*angular_gap)), r_drill);
+   
+    
+    curCell->addCircle(aux, newPoint(0,0), r_PCB+hole_margin);
+    
+    curCell->addCircle(aux2, newPoint(0,0), r_PCB+hole_margin);
+    curCell->addCircle(aux3, newPoint(0,0), r_PCB+hole_margin+r_drill);
+    
+    layout->booleanTool->boolOnLayer(aux3, aux2, aux4, "A-B", 0,0,0);
+    
+    layout->booleanTool->boolOnLayer(aux4, aux, board, "A-B", 0,0,0);
+    
+/*    clearLayer(curCell, aux);*/
+    clearAllAuxiliaryAux(curCell);
+}
+

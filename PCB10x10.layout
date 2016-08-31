@@ -157,7 +157,7 @@ int main() {
     clearLayer(curCell, protect);
     clearLayer(curCell, ground);
     clearLayer(curCell, aux);
-    clearLayer(curCell, hole);
+/*    clearLayer(curCell, hole);*/
     
     curCell->addBox(-r_PCB-1e6-hole_margin, -r_PCB-1e6-hole_margin, 2*r_PCB+2e6+2*hole_margin, 2*r_PCB+2e6+2*hole_margin, aux);
     

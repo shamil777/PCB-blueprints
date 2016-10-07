@@ -2,7 +2,7 @@
     Adds a ground plane with holes for the screws, vias and the chip itself
 */
 
-
+    bool exemption_holes_on_vertical_sides = true; // defaul value, may be overriden in the main script
     
 void add_PCB_ground_top(cell* curCell) {
         
@@ -30,14 +30,25 @@ void add_PCB_ground_top(cell* curCell) {
     
     curCell->addBox(-w_sample_hole/2-hole_margin, -h_sample_hole/2-hole_margin, w_sample_hole+2*hole_margin, h_sample_hole+2*hole_margin, protect);
     
-    cursor.set(-w_sample_hole/2, -h_sample_hole/2+r_drill);
-    curCell->addCircle(protect, cursor, r_drill+hole_margin);
-    cursor.set(-w_sample_hole/2, h_sample_hole/2-r_drill);
-    curCell->addCircle(protect, cursor, r_drill+hole_margin);  
-    cursor.set(w_sample_hole/2, -h_sample_hole/2+r_drill);
-    curCell->addCircle(protect, cursor, r_drill+hole_margin);
-    cursor.set(w_sample_hole/2, h_sample_hole/2-r_drill);
-    curCell->addCircle(protect, cursor, r_drill+hole_margin);
+    if (exemption_holes_on_vertical_sides) {
+        cursor.set(-w_sample_hole/2, -h_sample_hole/2+r_drill);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);
+        cursor.set(-w_sample_hole/2, h_sample_hole/2-r_drill);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);  
+        cursor.set(w_sample_hole/2, -h_sample_hole/2+r_drill);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);
+        cursor.set(w_sample_hole/2, h_sample_hole/2-r_drill);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);
+    } else {
+        cursor.set(-w_sample_hole/2+r_drill, -h_sample_hole/2);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);
+        cursor.set(-w_sample_hole/2+r_drill, h_sample_hole/2);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);  
+        cursor.set(w_sample_hole/2-r_drill, -h_sample_hole/2);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);
+        cursor.set(w_sample_hole/2-r_drill, h_sample_hole/2);
+        curCell->addCircle(protect, cursor, r_drill+hole_margin);
+    }
     
 }
 
@@ -66,14 +77,25 @@ void add_PCB_ground_bottom(cell* curCell) {
     
     curCell->addBox(-w_sample_hole/2-hole_margin, -h_sample_hole/2-hole_margin, w_sample_hole+2*hole_margin, h_sample_hole+2*hole_margin, aux3);
     
-    cursor.set(-w_sample_hole/2, -h_sample_hole/2+r_drill);
-    curCell->addCircle(aux3, cursor, r_drill+hole_margin);
-    cursor.set(-w_sample_hole/2, h_sample_hole/2-r_drill);
-    curCell->addCircle(aux3, cursor, r_drill+hole_margin);  
-    cursor.set(w_sample_hole/2, -h_sample_hole/2+r_drill);
-    curCell->addCircle(aux3, cursor, r_drill+hole_margin);
-    cursor.set(w_sample_hole/2, h_sample_hole/2-r_drill);
-    curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+    if (exemption_holes_on_vertical_sides) {
+        cursor.set(-w_sample_hole/2, -h_sample_hole/2+r_drill);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+        cursor.set(-w_sample_hole/2, h_sample_hole/2-r_drill);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);  
+        cursor.set(w_sample_hole/2, -h_sample_hole/2+r_drill);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+        cursor.set(w_sample_hole/2, h_sample_hole/2-r_drill);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+    } else {
+        cursor.set(-w_sample_hole/2+r_drill, -h_sample_hole/2);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+        cursor.set(-w_sample_hole/2+r_drill, h_sample_hole/2);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);  
+        cursor.set(w_sample_hole/2-r_drill, -h_sample_hole/2);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+        cursor.set(w_sample_hole/2-r_drill, h_sample_hole/2);
+        curCell->addCircle(aux3, cursor, r_drill+hole_margin);
+    }
     
     layout->booleanTool->boolOnLayer(aux2, aux3, bottom, "A-B", 0, 0, 0);
     

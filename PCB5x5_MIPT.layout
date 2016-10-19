@@ -33,13 +33,16 @@
         int r_screw_hole = 1.6e6/2;
         double screw_holes_starting_angle = 2*math::pi/16.;
         
-        int  r_via = 100e3;
+        int  r_via = 150e3;
+        int N_via_per_r_PCB = 15;
         
         int r_smps = 24e6/2;
         double smp_starting_angle = 2*math::pi/16. - screw_holes_starting_angle;
         int smp_transition_len = 1e6;
         
         int g_smp = w_smp;
+        int r_smp = g_smp+w_smp/2;
+        int w_hotwire_arc = 2*g_smp+w_smp;
                 
         int r_feed = 3.1e6;
         int w_feed = 260e3;

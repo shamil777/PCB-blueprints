@@ -1,21 +1,26 @@
 
+// Draws a layer of via holes which is within 200 um inside the ground polygon. The number of vias is defined with N_via_per_r_PCB.
+
+     double N_via_per_r_PCB = 7*2;
 
 void add_vias(cell* curCell) {
 
-    double n_a = 7*2;
-        
-    for (int i = -n_a; i<n_a+1; i++) {
-        for (int j = -n_a; j<n_a+1; j++) {
-            
-            point center = newPoint(i * r_PCB/n_a , j * r_PCB/n_a );
+    for (int i = -N_via_per_r_PCB; i<N_via_per_r_PCB+1; i++) {
+        for (int j = -N_via_per_r_PCB; j<N_via_per_r_PCB+1; j++) {
+            point center = newPoint(i * r_PCB/N_via_per_r_PCB , j * r_PCB/N_via_per_r_PCB );
             curCell->addCircle(aux2, center, r_via);
-            
         }
-        
+    }
+    
+    for (double i = -N_via_per_r_PCB; i<N_via_per_r_PCB+1; i++) {
+        for (double j = -N_via_per_r_PCB; j<N_via_per_r_PCB+1; j++) {
+            point center = newPoint((i-0.5) * r_PCB/N_via_per_r_PCB , (j-0.5) * r_PCB/N_via_per_r_PCB );
+            curCell->addCircle(aux2, center, r_via);
+        }     
     }
     
 
-    layout->booleanTool->boolOnLayer(aux2, protect, aux3, "A-B", 0, 0, 0);
+/*    layout->booleanTool->boolOnLayer(aux2, protect, aux3, "A-B", 0, 0, 0);*/
     layout->drcTool->inside(200e3, aux2, top);
 
     layout->booleanTool->boolOnLayer(aux2, error, via, "A-B", 0, 0, 0);

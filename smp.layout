@@ -34,7 +34,7 @@ point add_SMP_with_transformer(cell* curCell, point center, int w_transformed, i
     clearAllAuxiliaryAux(curCell);
     
     // Protect layer around the hotwire pin
-    curCell->addBox(center.x()-w_hotwire_arc/2, center.y()-a_smp_piedestal/2, w_hotwire_arc, 1e6, aux);
+    curCell->addBox(center.x()-w_hotwire_arc/2, center.y()-a_smp_piedestal/2, w_hotwire_arc, a_smp_piedestal/2, aux);
     curCell->addBox(center.x()-g_smp-w_smp/2., center.y()-a_smp_piedestal/2-l_hotwire+l_hotwire_depth, 2*g_smp+w_smp, l_hotwire, aux);
 
     rotateLayer(curCell, aux, center, angle);

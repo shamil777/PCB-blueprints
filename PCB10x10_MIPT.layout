@@ -40,6 +40,8 @@
         int smp_transition_len = .5e6;
         
         int g_smp = w_smp;
+        int r_smp = g_smp+w_smp/2;
+        int w_hotwire_arc = 2*g_smp+w_smp;
         
         int r_feed = 3.1e6;
         int w_feed = 260e3;

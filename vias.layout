@@ -1,7 +1,7 @@
 
 // Draws a layer of via holes which is within 200 um inside the ground polygon. The number of vias is defined with N_via_per_r_PCB.
 
-     double N_via_per_r_PCB = 7*2;
+     double N_via_per_r_PCB = 16;
 
 void add_vias(cell* curCell) {
 
@@ -20,10 +20,10 @@ void add_vias(cell* curCell) {
     }
     
 
-/*    layout->booleanTool->boolOnLayer(aux2, protect, aux3, "A-B", 0, 0, 0);*/
-    layout->drcTool->inside(200e3, aux2, top);
+    layout->booleanTool->boolOnLayer(aux2, top, aux3, "A*B", 0, 0, 0);
+    layout->drcTool->inside(200e3, aux3, top);
 
-    layout->booleanTool->boolOnLayer(aux2, error, via, "A-B", 0, 0, 0);
+    layout->booleanTool->boolOnLayer(aux3, error, via, "A-B", 0, 0, 0);
     string curCellName = curCell->cellName;
     layout->drawing->setCell(curCellName+":DRC-Rule");
     layout->drawing->deleteCurrentCell();

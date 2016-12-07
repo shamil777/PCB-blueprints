@@ -34,14 +34,20 @@
         int r_screw_hole = 2.3e6/2;
         double screw_holes_starting_angle = 0;
         
-        int  r_via = 100e3;
+        int  r_via = 150e3;
         
         int r_smps = 23e6/2;
         double smp_starting_angle = 2*math::pi/16. - screw_holes_starting_angle;
         int smp_transition_len = 0.2e6;
         int smp_transition_len2 = 0.8e6;
+        
+        int g_smp = w_smp;
+        int r_smp = 1e6;//g_smp+w_smp/2;
+        int w_hotwire_arc = 2*g_smp+w_smp;
+        
+        
         int r_feed = 2.7e6;
-        int w_feed = 275e3;
+        int w_feed = 260e3;
         int g_feed = 150e3;
         int g_protect = 2*g_feed+w_feed;
         

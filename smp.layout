@@ -3,7 +3,7 @@
 
     int r_smp = 4e6/2;
     int a_smp_piedestal = 5e6;
-    int a_smp_footprint = 5.3e6;
+    int a_smp_footprint = 5.4e6;
     int l_hotwire = 1.3e6;
     int l_hotwire_depth = .3e6;
     int w_hotwire = 0.5e6;

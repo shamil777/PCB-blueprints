@@ -35,7 +35,7 @@
         double screw_holes_starting_angle = 2*math::pi/16.;
         
         int  r_via = 150e3;
-        int N_via_per_r_PCB = 15;
+        int N_via_per_r_PCB = 10;
         
         int r_smps = 24e6/2;
         double smp_starting_angle = 2*math::pi/16. - screw_holes_starting_angle;
@@ -47,7 +47,7 @@
         
         int r_feed = 6.2e6;
         int w_feed = 260e3;
-        int g_feed = 150e3;
+        int g_feed = 200e3;
         int g_protect = 2*g_feed+w_feed;
         
         int w_sample_hole = 9.6e6;
